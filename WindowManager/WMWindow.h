@@ -38,7 +38,7 @@ WMwindow::WMwindow(int width, int height, const char* title, int cond) : _width(
 
 WMwindow::~WMwindow()
 {
-	delete _title;
+	
 }
 
 void WMwindow::addDrawables(func f)
