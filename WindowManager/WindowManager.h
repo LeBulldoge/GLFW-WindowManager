@@ -11,10 +11,9 @@ public:
 	WindowManager(int size);
 	~WindowManager();
 
-	windowPtr addWindow(int o, int width, int height, const char* title, GLFWmonitor* monitor, GLFWwindow* share);
+	void addWindow(int width, int height, const char* title, int cond);
 	void destroyWindow(windowPtr ptr);
-	bool shouldClose();
-	void addKeyCallback(void* func);
+	windowPtr operator[](int i);
 
 private:
 
@@ -35,11 +34,10 @@ WindowManager::~WindowManager()
 {
 }
 
-windowPtr WindowManager::addWindow(int o, int width, int height, const char* title, GLFWmonitor* monitor, GLFWwindow* share)
+void WindowManager::addWindow(int width, int height, const char* title, int cond)
 {
-	windows.emplace_back(std::make_shared<WMwindow>(o, width, height, title, monitor, share));
+	windows.emplace_back(std::make_shared<WMwindow>(width, height, title, cond));
 	main = windows[0];
-	return windows[o];
 }
 
 void WindowManager::destroyWindow(windowPtr ptr)
@@ -48,24 +46,7 @@ void WindowManager::destroyWindow(windowPtr ptr)
 	windows.erase(std::remove(windows.begin(), windows.end(), ptr), windows.end());
 }
 
-bool WindowManager::shouldClose()
+windowPtr WindowManager::operator[](int i)
 {
-	if (!windows.size()) return true;
-	for (windowPtr p : windows)
-	{
-		if (glfwWindowShouldClose(p->getWindow()))
-		{
-			if (p == main) return true;
-			destroyWindow(p);
-		}
-	}
-	return false;
-}
-
-void WindowManager::addKeyCallback(void* func)
-{
-	for (windowPtr p : windows)
-	{
-		p->addKeyCallback(func);
-	}
+	return windows[i];
 }

@@ -1,8 +1,8 @@
 #pragma once
 #include <memory>
-
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_glfw.h"
+#include "imgui/imgui_impl_opengl3.h"
 
 class WMwindow;
 using windowPtr = std::shared_ptr<WMwindow>;
@@ -11,38 +11,44 @@ class WMwindow
 {
 public:
 
-	WMwindow(int o, int width, int height, const char* title, GLFWmonitor* monitor, GLFWwindow* share);
+	WMwindow(int width, int height, const char* title, int cond);
 	~WMwindow();
-	GLFWwindow* getWindow();
-	void addKeyCallback(void* func);
+	void addDrawables(void (*func)());
+	void draw();
 
 private:
 
-	int order;
-	GLFWwindow* glWindow;
+	int _width;
+	int _height;
+	const char* _title;
+	int _cond;
+
+	void (*drawables)();
 };
 
-WMwindow::WMwindow(int o, int width, int height, const char* title, GLFWmonitor* monitor, GLFWwindow* share) : order(o)
+WMwindow::WMwindow(int width, int height, const char* title, int cond) : _width(width), _height(height), _title(title), _cond(cond)
 {
-	glWindow = glfwCreateWindow(width, height, title, monitor, share);
-	if (!glWindow)
-	{
-		glfwTerminate();
-	}
+	drawables = nullptr;
 }
 
 WMwindow::~WMwindow()
 {
-	glfwDestroyWindow(glWindow);
-	glWindow = nullptr;
+
 }
 
-GLFWwindow* WMwindow::getWindow()
+void WMwindow::addDrawables(void (*func)())
 {
-	return glWindow;
+	drawables = func;
 }
 
-void WMwindow::addKeyCallback(void* func)
+void WMwindow::draw()
 {
-	glfwSetKeyCallback(glWindow, (GLFWkeyfun)func);
+	ImGui::SetNextWindowSize(ImVec2(_width, _height), _cond);
+	ImGui::Begin(_title);
+		ImGui::Text(_title);
+		if (drawables)
+		{
+			drawables();
+		}
+	ImGui::End();
 }
