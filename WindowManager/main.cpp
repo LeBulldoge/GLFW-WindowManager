@@ -11,9 +11,7 @@
 
 const int WIDTH = 400;
 const int HEIGHT = 400;
-GLFWwindow* window;
-
-
+static GLFWwindow* window;
 
 int initGLFW()
 {
@@ -54,6 +52,14 @@ void createText()
 {
 	ImGui::Text("Stuff");
 }
+void createStuff()
+{
+	ImGui::BeginChildFrame(1, ImVec2(100, 100));
+	ImGui::BeginChild(1, ImVec2(100, 100), false);
+		ImGui::Text("Stuff");
+	ImGui::EndChild();
+	ImGui::EndChildFrame();
+}
 
 int main()
 {
@@ -67,7 +73,8 @@ int main()
 	wm.addWindow(100, 100, "3", ImGuiCond_FirstUseEver);
 	wm.addWindow(100, 100, "4", ImGuiCond_FirstUseEver);
 
-	wm[0]->addDrawables(createText);
+	wm[0]->addDrawables(&createText);
+	wm[1]->addDrawables(&createStuff);
 
 	ImGui::CreateContext();
 	ImGui_ImplGlfw_InitForOpenGL(window, false);
@@ -79,8 +86,7 @@ int main()
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
 
-		wm[0]->draw();
-		wm[4]->draw();
+		wm.drawAll();
 
 		ImGui::Render();
 		ImGui::EndFrame();
@@ -95,6 +101,7 @@ int main()
 
 	}
 
+	glfwDestroyWindow(window);
 	glfwTerminate();
 
 	return 0;

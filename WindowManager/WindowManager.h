@@ -13,40 +13,51 @@ public:
 
 	void addWindow(int width, int height, const char* title, int cond);
 	void destroyWindow(windowPtr ptr);
+	void drawAll();
 	windowPtr operator[](int i);
+	
 
 private:
 
-	std::vector<windowPtr> windows;
-	windowPtr main;
+	std::vector<windowPtr> _windows;
+
 };
 
 WindowManager::WindowManager()
 {
+
 }
 
 WindowManager::WindowManager(int size)
 {
-	windows.reserve(size);
+	_windows.reserve(size);
 }
 
 WindowManager::~WindowManager()
 {
+
 }
 
 void WindowManager::addWindow(int width, int height, const char* title, int cond)
 {
-	windows.emplace_back(std::make_shared<WMwindow>(width, height, title, cond));
-	main = windows[0];
+	_windows.emplace_back(std::make_shared<WMwindow>(width, height, title, cond));
 }
 
 void WindowManager::destroyWindow(windowPtr ptr)
 {
 	ptr->~WMwindow();
-	windows.erase(std::remove(windows.begin(), windows.end(), ptr), windows.end());
+	_windows.erase(std::remove(_windows.begin(), _windows.end(), ptr), _windows.end());
+}
+
+void WindowManager::drawAll()
+{
+	for (windowPtr ptr : _windows)
+	{
+		ptr->draw();
+	}
 }
 
 windowPtr WindowManager::operator[](int i)
 {
-	return windows[i];
+	return _windows[i];
 }
