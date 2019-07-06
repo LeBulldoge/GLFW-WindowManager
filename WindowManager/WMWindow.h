@@ -21,17 +21,22 @@ private:
 	int _height;
 	const char* _title;
 	int _cond;
+	bool _visibility;
 	std::vector<funcPtr> drawables;
 
 public:
 
-	WMwindow(int width, int height, const char* title, int cond);
+	WMwindow(int width, int height, const char* title, int cond, bool visibility);
 	~WMwindow();
 	void addDrawables(func f);
+	void removeDrawable(int i);
 	void draw();
+	void show();
+	void hide();
+	
 };
 
-WMwindow::WMwindow(int width, int height, const char* title, int cond) : _width(width), _height(height), _title(title), _cond(cond)
+WMwindow::WMwindow(int width, int height, const char* title, int cond, bool visibility) : _width(width), _height(height), _title(title), _cond(cond), _visibility(visibility)
 {
 	
 }
@@ -46,14 +51,31 @@ void WMwindow::addDrawables(func f)
 	drawables.emplace_back(std::make_shared<func>(f));
 }
 
+void WMwindow::removeDrawable(int i)
+{
+	drawables.erase(drawables.begin() + i);
+}
+
 void WMwindow::draw()
 {
-	ImGui::SetNextWindowSize(ImVec2(_width, _height), _cond);
-	ImGui::Begin(_title);
+	if (_visibility)
+	{
+		ImGui::SetNextWindowSize(ImVec2(_width, _height), _cond);
+		ImGui::Begin(_title, &_visibility, 0);
 		if (drawables.size())
 		{
 			for (funcPtr ptr : drawables)
 				std::invoke(*ptr);
 		}
-	ImGui::End();
+		ImGui::End();
+	}
+}
+
+void WMwindow::show()
+{
+	_visibility = true;
+}
+void WMwindow::hide()
+{
+	_visibility = false;
 }

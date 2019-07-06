@@ -1,6 +1,4 @@
 #include "WindowManager.h"
-#include <vector>
-#include <string>
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -50,13 +48,16 @@ int initGLEW()
 
 void createText()
 {
-	ImGui::Text("Stuff");
+	ImGui::Text("Application average %.3f ms/frame (%.1f FPS)",
+		1000.0f / ImGui::GetIO().Framerate,
+		ImGui::GetIO().Framerate);
 }
 void createStuff()
 {
 	ImGui::BeginChildFrame(1, ImVec2(100, 100));
 	ImGui::BeginChild(1, ImVec2(100, 100), false);
 		ImGui::Text("Stuff");
+		ImGui::Button("Yeet", ImVec2(50, 50));
 	ImGui::EndChild();
 	ImGui::EndChildFrame();
 }
@@ -65,16 +66,17 @@ int main()
 {
 	initGLFW();
 	initGLEW();
-
 	WindowManager wm(5);
-	wm.addWindow(100, 100, "0", ImGuiCond_FirstUseEver);
-	wm.addWindow(100, 100, "1", ImGuiCond_FirstUseEver);
-	wm.addWindow(100, 100, "2", ImGuiCond_FirstUseEver);
-	wm.addWindow(100, 100, "3", ImGuiCond_FirstUseEver);
-	wm.addWindow(100, 100, "4", ImGuiCond_FirstUseEver);
+	wm.addWindow(100, 100, "0", ImGuiCond_FirstUseEver, true);
+	wm.addWindow(100, 100, "1", ImGuiCond_FirstUseEver, true);
+	wm.addWindow(100, 100, "2", ImGuiCond_FirstUseEver, true);
+	wm.addWindow(100, 100, "3", ImGuiCond_FirstUseEver, true);
+	wm.addWindow(100, 100, "4", ImGuiCond_FirstUseEver, true);
 
 	wm[0]->addDrawables(&createText);
 	wm[1]->addDrawables(&createStuff);
+
+	wm[2]->hide();
 
 	ImGui::CreateContext();
 	ImGui_ImplGlfw_InitForOpenGL(window, false);

@@ -11,7 +11,7 @@ public:
 	WindowManager(int size);
 	~WindowManager();
 
-	void addWindow(int width, int height, const char* title, int cond);
+	void addWindow(int width, int height, const char* title, int cond, bool visibility);
 	void destroyWindow(windowPtr ptr);
 	void drawAll();
 	windowPtr operator[](int i);
@@ -38,9 +38,9 @@ WindowManager::~WindowManager()
 
 }
 
-void WindowManager::addWindow(int width, int height, const char* title, int cond)
+void WindowManager::addWindow(int width, int height, const char* title, int cond, bool visibility)
 {
-	_windows.emplace_back(std::make_shared<WMwindow>(width, height, title, cond));
+	_windows.emplace_back(std::make_shared<WMwindow>(width, height, title, cond, visibility));
 }
 
 void WindowManager::destroyWindow(windowPtr ptr)
@@ -57,7 +57,7 @@ void WindowManager::drawAll()
 	}
 }
 
-windowPtr WindowManager::operator[](int i)
+windowPtr WindowManager::operator[](const int i)
 {
 	return _windows[i];
 }
