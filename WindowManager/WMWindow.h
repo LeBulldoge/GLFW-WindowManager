@@ -28,33 +28,40 @@ private:
 
 public:
 
-	WMwindow(int width, int height, const char* title, ImGuiCond cond, bool visibility, ImGuiWindowFlags flags);
+	WMwindow(int width, int height, const char* title, ImGuiCond cond, bool visibility, bool pinned, ImGuiWindowFlags flags);
 	~WMwindow();
+
 	const char* getTitle();
+
 	void addDrawables(func f);
 	void removeDrawable(int i);
+
 	void draw();
+
 	void show();
 	void hide();
+
 	bool getPinned();
 	void pin();
 	void unpin();
+
 	void swapVisibility();
+
 	void changeFlags(ImGuiWindowFlags flags);
 	
 };
 
-WMwindow::WMwindow(int width, int height, const char* title, ImGuiCond cond, bool visibility, ImGuiWindowFlags flags)
+WMwindow::WMwindow(int width, int height, const char* title, ImGuiCond cond, bool visibility, bool pinned, ImGuiWindowFlags flags)
 	: 
 	_width(width), 
 	_height(height), 
 	_title(title), 
 	_cond(cond), 
 	_visibility(visibility), 
+	_pinned(pinned),
 	_flags(flags)
 {
-	_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus;
-	_pinned = false;
+	_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_MenuBar;
 }
 
 WMwindow::~WMwindow()
@@ -86,7 +93,7 @@ void WMwindow::draw()
 		ImGui::PushItemWidth(ImGui::GetFontSize() * -12);
 		if (ImGui::BeginMenuBar())
 		{
-			if (ImGui::MenuItem("Pin", NULL, false, !_pinned))
+			if (ImGui::MenuItem("Pin", NULL, true, !_pinned))
 			{
 				pin();
 			}

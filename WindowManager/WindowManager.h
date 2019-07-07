@@ -11,18 +11,17 @@ public:
 	WindowManager(int size);
 	~WindowManager();
 
-	void addWindow(int width, int height, const char* title, ImGuiCond cond, bool visibility = true, ImGuiWindowFlags flags = ImGuiWindowFlags_NoBringToFrontOnFocus);
+	void addWindow(int width, int height, const char* title, ImGuiCond cond, bool visibility = true, bool pinned = false, ImGuiWindowFlags flags = ImGuiWindowFlags_NoBringToFrontOnFocus);
 	void destroyWindow(windowPtr ptr);
 	void drawAll();
 	void move(int a, int b);
 	void resetPinnedStatus();
 	windowPtr operator[](int i);
 	
-
 private:
 
 	std::vector<windowPtr> _windows;
-	windowPtr _pinned;
+	windowPtr _pinnedPtr;
 };
 
 WindowManager::WindowManager()
@@ -40,14 +39,9 @@ WindowManager::~WindowManager()
 
 }
 
-void WindowManager::addWindow(int width, int height, const char* title, ImGuiCond cond, bool visibility, ImGuiWindowFlags flags)
+void WindowManager::addWindow(int width, int height, const char* title, ImGuiCond cond, bool visibility, bool pinned, ImGuiWindowFlags flags)
 {
-	_windows.emplace_back(std::make_shared<WMwindow>(width, height, title, cond, visibility, flags));
-	if (_windows.size() == 1)
-	{
-		_windows[0]->pin();
-		_pinned = _windows[0];
-	}
+	_windows.emplace_back(std::make_shared<WMwindow>(width, height, title, cond, visibility, pinned, flags));
 }
 
 void WindowManager::destroyWindow(windowPtr ptr)
@@ -74,10 +68,10 @@ void WindowManager::resetPinnedStatus()
 {
 	for (windowPtr ptr : _windows)
 	{
-		if (ptr->getPinned() && ptr != _pinned)
+		if (ptr->getPinned() && ptr != _pinnedPtr)
 		{
-			_pinned->unpin();
-			_pinned = ptr;
+			if (_pinnedPtr != nullptr) _pinnedPtr->unpin();
+			_pinnedPtr = ptr;
 			ImGui::SetWindowFocus(ptr->getTitle());
 		}
 	}

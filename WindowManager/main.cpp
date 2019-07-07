@@ -7,8 +7,8 @@
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
 
-const int WIDTH = 400;
-const int HEIGHT = 400;
+const int WIDTH = 1280;
+const int HEIGHT = 720;
 static GLFWwindow* window;
 static WindowManager wm(5);
 
@@ -58,10 +58,9 @@ void createStuff()
 	ImGui::BeginChildFrame(1, ImVec2(100, 100));
 	ImGui::BeginChild(1, ImVec2(100, 100), false);
 		ImGui::Text("Stuff");
-		if (ImGui::Button("Yeet", ImVec2(50, 50)))
+		if (ImGui::Button("Button", ImVec2(50, 50)))
 		{
-			wm.move(0, 4);
-			wm[0]->changeFlags(0);
+
 		}
 	ImGui::EndChild();
 	ImGui::EndChildFrame();
@@ -72,20 +71,18 @@ int main()
 	initGLFW();
 	initGLEW();
 	
-	wm.addWindow(100, 100, "0", ImGuiCond_FirstUseEver, true, ImGuiWindowFlags_MenuBar);
-	wm.addWindow(100, 100, "1", ImGuiCond_FirstUseEver, true, ImGuiWindowFlags_MenuBar);
-	wm.addWindow(100, 100, "2", ImGuiCond_FirstUseEver, true, ImGuiWindowFlags_MenuBar);
-	wm.addWindow(100, 100, "3", ImGuiCond_FirstUseEver, true, ImGuiWindowFlags_MenuBar);
-	wm.addWindow(100, 100, "4", ImGuiCond_FirstUseEver, true, ImGuiWindowFlags_MenuBar);
+	wm.addWindow(100, 100, "0", ImGuiCond_FirstUseEver);
+	wm.addWindow(100, 100, "1", ImGuiCond_FirstUseEver);
+	wm.addWindow(100, 100, "2", ImGuiCond_FirstUseEver);
+	wm.addWindow(100, 100, "3", ImGuiCond_FirstUseEver);
+	wm.addWindow(100, 100, "4", ImGuiCond_FirstUseEver);
 
 	wm[0]->addDrawables(&createText);
 	wm[1]->addDrawables(&createStuff);
-	
-	wm[2]->hide();
 
 	ImGui::CreateContext();
 	ImGui_ImplGlfw_InitForOpenGL(window, false);
-	ImGui_ImplOpenGL3_Init("#version 130");
+	ImGui_ImplOpenGL3_Init("#version 330");
 
 	while (!glfwWindowShouldClose(window))
 	{
