@@ -2,6 +2,7 @@
 #include <memory>
 #include <functional>
 #include <vector>
+#include <string>
 
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw.h"
@@ -19,7 +20,7 @@ private:
 
 	int _width;
 	int _height;
-	const char* _title;
+	std::string _title;
 	ImGuiCond _cond;
 	ImGuiWindowFlags _flags;
 	bool _visibility;
@@ -28,10 +29,10 @@ private:
 
 public:
 
-	WMwindow(int width, int height, const char* title, ImGuiCond cond, bool visibility, bool pinned, ImGuiWindowFlags flags);
+	WMwindow(int width, int height, std::string title, ImGuiCond cond, bool visibility, bool pinned, ImGuiWindowFlags flags);
 	~WMwindow();
 
-	const char* getTitle();
+	std::string getTitle();
 
 	void addDrawables(func f);
 	void removeDrawable(int i);
@@ -47,11 +48,12 @@ public:
 
 	void swapVisibility();
 
-	void changeFlags(ImGuiWindowFlags flags);
+	void addFlags(ImGuiWindowFlags flags);
+	void removeFlags(ImGuiWindowFlags flags);
 	
 };
 
-WMwindow::WMwindow(int width, int height, const char* title, ImGuiCond cond, bool visibility, bool pinned, ImGuiWindowFlags flags)
+WMwindow::WMwindow(int width, int height, std::string title, ImGuiCond cond, bool visibility, bool pinned, ImGuiWindowFlags flags)
 	: 
 	_width(width), 
 	_height(height), 
@@ -69,7 +71,7 @@ WMwindow::~WMwindow()
 	
 }
 
-const char* WMwindow::getTitle()
+std::string WMwindow::getTitle()
 {
 	return _title;
 }
@@ -89,7 +91,7 @@ void WMwindow::draw()
 	if (_visibility)
 	{
 		ImGui::SetNextWindowSize(ImVec2(_width, _height), _cond);
-		ImGui::Begin(_title, &_visibility, _flags);
+		ImGui::Begin(_title.c_str(), &_visibility, _flags);
 		ImGui::PushItemWidth(ImGui::GetFontSize() * -12);
 		if (ImGui::BeginMenuBar())
 		{
@@ -99,7 +101,7 @@ void WMwindow::draw()
 			}
 			ImGui::EndMenuBar();
 		}
-		if (_drawables.size())
+		if (!_drawables.empty())
 		{
 			for (funcPtr ptr : _drawables)
 				std::invoke(*ptr);
@@ -110,7 +112,6 @@ void WMwindow::draw()
 			ImGui::SetWindowFocus();
 		}
 	}
-	
 }
 
 void WMwindow::show()
@@ -133,15 +134,20 @@ bool WMwindow::getPinned()
 void WMwindow::pin()
 {
 	_pinned = true;
-	_flags ^= ImGuiWindowFlags_NoBringToFrontOnFocus;
+	_flags &= ~ImGuiWindowFlags_NoBringToFrontOnFocus;
 }
 void WMwindow::unpin()
 {
 	_pinned = false;
-	_flags ^= ImGuiWindowFlags_NoBringToFrontOnFocus;
+	_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus;
 }
 
-void WMwindow::changeFlags(ImGuiWindowFlags flags)
+void WMwindow::addFlags(ImGuiWindowFlags flags)
 {
-	_flags = flags;
+	_flags |= flags;
+}
+
+void WMwindow::removeFlags(ImGuiWindowFlags flags)
+{
+	_flags &= ~flags;
 }
