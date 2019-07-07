@@ -56,8 +56,8 @@ void createStuff()
 {
 	ImGui::BeginChildFrame(1, ImVec2(100, 100));
 	ImGui::BeginChild(1, ImVec2(100, 100), false);
-		ImGui::Text("Stuff");
-		ImGui::Button("Button", ImVec2(50, 50));
+	ImGui::Text("Stuff");
+	ImGui::Button("Button", ImVec2(50, 50));
 	ImGui::EndChild();
 	ImGui::EndChildFrame();
 }
@@ -68,13 +68,13 @@ int main()
 	initGLEW();
 
 	WindowManager wm(5);
-	wm.addWindow(100, 100, "0", ImGuiCond_FirstUseEver);
-	wm.addWindow(100, 100, "1", ImGuiCond_FirstUseEver);
-	wm.addWindow(100, 100, "2", ImGuiCond_FirstUseEver);
-	wm.addWindow(100, 100, "3", ImGuiCond_FirstUseEver);
-	wm.addWindow(100, 100, "4", ImGuiCond_FirstUseEver);
+	wm.addWindow(200, 200, "0", ImGuiCond_FirstUseEver);
+	wm.addWindow(200, 200, "1", ImGuiCond_FirstUseEver);
+	wm.addWindow(200, 200, "2", ImGuiCond_FirstUseEver);
+	wm.addWindow(200, 200, "3", ImGuiCond_FirstUseEver);
+	wm.addWindow(200, 200, "4", ImGuiCond_FirstUseEver);
 
-	if (wm["3"].has_value()) wm["3"].value()->addDrawables(&createStuff);
+	if (wm["3"].has_value()) wm["3"].value()->addDrawables(&createText);
 	if (wm[4].has_value()) wm[4].value()->addDrawables(&createStuff);
 
 	ImGui::CreateContext();

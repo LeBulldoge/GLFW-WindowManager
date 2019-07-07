@@ -46,20 +46,20 @@ public:
 	void pin();
 	void unpin();
 
-	void swapVisibility();
+	void toggleVisibility();
 
 	void addFlags(ImGuiWindowFlags flags);
 	void removeFlags(ImGuiWindowFlags flags);
-	
+
 };
 
 WMwindow::WMwindow(int width, int height, std::string title, ImGuiCond cond, bool visibility, bool pinned, ImGuiWindowFlags flags)
-	: 
-	_width(width), 
-	_height(height), 
-	_title(title), 
-	_cond(cond), 
-	_visibility(visibility), 
+	:
+	_width(width),
+	_height(height),
+	_title(title),
+	_cond(cond),
+	_visibility(visibility),
 	_pinned(pinned),
 	_flags(flags)
 {
@@ -68,7 +68,7 @@ WMwindow::WMwindow(int width, int height, std::string title, ImGuiCond cond, boo
 
 WMwindow::~WMwindow()
 {
-	
+
 }
 
 std::string WMwindow::getTitle()
@@ -122,7 +122,7 @@ void WMwindow::hide()
 {
 	_visibility = false;
 }
-void WMwindow::swapVisibility()
+void WMwindow::toggleVisibility()
 {
 	_visibility = !_visibility;
 }
@@ -146,7 +146,6 @@ void WMwindow::addFlags(ImGuiWindowFlags flags)
 {
 	_flags |= flags;
 }
-
 void WMwindow::removeFlags(ImGuiWindowFlags flags)
 {
 	_flags &= ~flags;

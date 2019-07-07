@@ -1,11 +1,16 @@
 #pragma once
-#include "WMWindow.h"
+#include "WMwindow.h"
 #include <vector>
 #include <algorithm>
 #include <optional>
 
 class WindowManager
 {
+private:
+
+	std::vector<windowPtr> _windows;
+	windowPtr _pinnedPtr;
+
 public:
 
 	WindowManager();
@@ -19,16 +24,13 @@ public:
 	void resetPinnedStatus();
 	std::optional<windowPtr> operator[](int i);
 	std::optional<windowPtr> operator[](std::string title);
-	
-private:
-
-	std::vector<windowPtr> _windows;
-	windowPtr _pinnedPtr;
+	size_t size();
+	bool empty();
 };
 
 WindowManager::WindowManager()
 {
-	
+
 }
 
 WindowManager::WindowManager(int size)
@@ -87,7 +89,6 @@ std::optional<windowPtr> WindowManager::operator[](const int i)
 	}
 	return std::nullopt;
 }
-
 std::optional<windowPtr> WindowManager::operator[](std::string title)
 {
 	for (windowPtr ptr : _windows)
@@ -95,4 +96,13 @@ std::optional<windowPtr> WindowManager::operator[](std::string title)
 		if (ptr->getTitle() == title) return ptr;
 	}
 	return std::nullopt;
+}
+
+size_t WindowManager::size()
+{
+	return _windows.size();
+}
+bool WindowManager::empty()
+{
+	return _windows.empty();
 }
