@@ -22,7 +22,7 @@ public:
 	void drawAll();
 	void move(int a, int b);
 	void resetPinnedStatus();
-	std::optional<windowPtr> operator[](int i);
+	std::optional<windowPtr> operator[](const unsigned int i);
 	std::optional<windowPtr> operator[](std::string title);
 	size_t size();
 	bool empty();
@@ -81,7 +81,7 @@ void WindowManager::resetPinnedStatus()
 	}
 }
 
-std::optional<windowPtr> WindowManager::operator[](const int i)
+std::optional<windowPtr> WindowManager::operator[](const unsigned int i)
 {
 	if (_windows.size() > i)
 	{
