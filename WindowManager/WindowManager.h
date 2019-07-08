@@ -50,7 +50,6 @@ void WindowManager::addWindow(int width, int height, std::string title, ImGuiCon
 
 void WindowManager::destroyWindow(windowPtr ptr)
 {
-	ptr->~WMwindow();
 	_windows.erase(std::remove(_windows.begin(), _windows.end(), ptr), _windows.end());
 }
 
