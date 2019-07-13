@@ -30,7 +30,7 @@ public:
 
 WindowManager::WindowManager()
 {
-
+	ImGui::StyleColorsDark();
 }
 
 WindowManager::WindowManager(int size)
@@ -56,10 +56,20 @@ void WindowManager::destroyWindow(windowPtr ptr)
 void WindowManager::drawAll()
 {
 	resetPinnedStatus();
+
+	ImGui_ImplOpenGL3_NewFrame();
+	ImGui_ImplGlfw_NewFrame();
+	ImGui::NewFrame();
+
 	for (windowPtr ptr : _windows)
 	{
 		ptr->draw();
 	}
+
+	ImGui::Render();
+	ImGui::EndFrame();
+
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
 void WindowManager::move(const int a, const int b)

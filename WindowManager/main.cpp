@@ -46,11 +46,12 @@ int initGLEW()
 	return 0;
 }
 
-void createText()
+void createText(std::string a)
 {
 	ImGui::Text("Application average %.3f ms/frame (%.1f FPS)",
 		1000.0f / ImGui::GetIO().Framerate,
 		ImGui::GetIO().Framerate);
+	ImGui::Text(a.c_str());
 }
 void createStuff()
 {
@@ -74,8 +75,24 @@ int main()
 	wm.addWindow(200, 200, "3", ImGuiCond_FirstUseEver);
 	wm.addWindow(200, 200, "4", ImGuiCond_FirstUseEver);
 
-	if (wm["3"].has_value()) wm["3"].value()->addDrawables(&createText);
-	if (wm[4].has_value()) wm[4].value()->addDrawables(&createStuff);
+	std::string test = "This is a demo.";
+
+	if (wm["3"].has_value()) wm["3"].value()->addDrawables([&test]()
+	{
+		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)",
+			1000.0f / ImGui::GetIO().Framerate,
+			ImGui::GetIO().Framerate);
+		ImGui::Text(test.c_str());
+	});
+	if (wm[4].has_value()) wm[4].value()->addDrawables([]()
+	{
+		ImGui::BeginChildFrame(1, ImVec2(100, 100));
+		ImGui::BeginChild(1, ImVec2(100, 100), false);
+		ImGui::Text("Stuff");
+		ImGui::Button("Button", ImVec2(50, 50));
+		ImGui::EndChild();
+		ImGui::EndChildFrame();
+	});
 
 	ImGui::CreateContext();
 	ImGui_ImplGlfw_InitForOpenGL(window, false);

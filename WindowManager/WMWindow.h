@@ -15,9 +15,6 @@ class WMwindow
 {
 private:
 
-	using func = std::function<void()>;
-	using funcPtr = std::shared_ptr<func>;
-
 	int _width;
 	int _height;
 	std::string _title;
@@ -25,7 +22,7 @@ private:
 	ImGuiWindowFlags _flags;
 	bool _visibility;
 	bool _pinned;
-	std::vector<funcPtr> _drawables;
+	std::vector<std::function<void()>> _drawables;
 
 public:
 
@@ -34,7 +31,8 @@ public:
 
 	std::string getTitle();
 
-	void addDrawables(func f);
+	template<typename T>
+	void addDrawables(T&& f);
 	void removeDrawable(int i);
 
 	void draw();
@@ -76,9 +74,10 @@ std::string WMwindow::getTitle()
 	return _title;
 }
 
-void WMwindow::addDrawables(func f)
+template<typename T>
+void WMwindow::addDrawables(T&& f)
 {
-	_drawables.emplace_back(std::make_shared<func>(f));
+	_drawables.push_back(f);
 }
 
 void WMwindow::removeDrawable(int i)
@@ -103,8 +102,8 @@ void WMwindow::draw()
 		}
 		if (!_drawables.empty())
 		{
-			for (funcPtr ptr : _drawables)
-				std::invoke(*ptr);
+			for (std::function<void()> func : _drawables)
+				std::invoke(func);
 		}
 		ImGui::End();
 		if (_pinned)
